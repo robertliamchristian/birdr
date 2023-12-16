@@ -1,22 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import Login from './Login';
-import BirdList from './BirdList';  // Import BirdList
-
+import BirdList from './BirdList';
+import AddBird from './AddBird';  // Import AddBird
 
 function App() {
-  const [user, setUser] = useState(null);  // State to store the logged-in user
+  const [user, setUser] = useState(null);
   const [birds, setBirds] = useState([]);
+
+  const fetchBirds = () => {
+    fetch('http://localhost:5002/api/birds', { credentials: 'include' })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setBirds(data);
+      });
+  };
 
   useEffect(() => {
     if (user) {
-      fetch('http://localhost:5002/api/birds', { credentials: 'include' })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);  // Log the data here
-        setBirds(data);
-      });
+      fetchBirds();
     }
   }, [user]);
+
+  const handleAddBird = async (birdName) => {
+    const response = await fetch('http://localhost:5002/api/sightings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ birdname: birdName }),
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const newSighting = await response.json();
+      console.log('New sighting added:', newSighting);
+      fetchBirds();  // Re-fetch the list of birds
+    } else {
+      console.error('Failed to add sighting');
+    }
+  };
 
   const handleLogin = async (username, password) => {
     try {
@@ -48,6 +69,7 @@ function App() {
         <p>Logged in as: {user}</p>
       </header>
       <main>
+        <AddBird onAddBird={handleAddBird} />  // Use AddBird to add birds
         <BirdList birds={birds} />  // Use BirdList to display the birds
       </main>
     </div>
