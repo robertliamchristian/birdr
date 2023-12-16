@@ -5,11 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash  # Import check_password_hash here
 from flask_login import login_user, current_user, LoginManager, UserMixin, logout_user, login_required
+from sqlalchemy.sql.expression import case
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True) 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 app.secret_key = 'your_really_secret_key_here'
 
@@ -40,11 +42,32 @@ class Log(db.Model):
             # Include other fields if needed
         }
     
-
+class UserSighting(db.Model):
+    __tablename__ = 'user_sighting'
+    sightingid = db.Column(db.Integer, primary_key=True)
+    birdref = db.Column(db.Integer, db.ForeignKey('log.birdid'))
+    userid = db.Column(db.Integer, db.ForeignKey('alluser.id'))
+    sighting_time = db.Column(db.DateTime, nullable=False)
+    listid = db.Column(db.Integer, db.ForeignKey('user_list.listid'))
+    
+    def to_dict(self):
+        return {'sightingid': self.sightingid, 'birdref': self.birdref, 'userid': self.userid, 'sighting_time': self.sighting_time, 'listid': self.listid}
+    
 @app.route('/api/birds', methods=['GET'])
+@login_required
 def get_birds():
-    birds = Log.query.all()  # Removed with_entities to get full Log instances
-    return jsonify([bird.to_dict() for bird in birds])
+    user_id = current_user.get_id()  # Use get_id() method which handles AnonymousUserMixin
+    birds = db.session.query(
+        Log,
+        case((UserSighting.sighting_time != None, "Sighted"), else_="Not Sighted").label("seen")
+    ).outerjoin(
+        UserSighting, db.and_(Log.birdid == UserSighting.birdref, UserSighting.userid == user_id)
+    ).all()
+
+    return jsonify([{
+        **bird.to_dict(),
+        'seen': seen
+    } for bird, seen in birds])
 
 
 #start user logic
@@ -59,6 +82,10 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
     
 @app.route('/login', methods=['POST'])
 def login():

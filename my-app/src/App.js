@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Login from './Login';
+import BirdList from './BirdList';  // Import BirdList
+
 
 function App() {
   const [user, setUser] = useState(null);  // State to store the logged-in user
   const [birds, setBirds] = useState([]);
 
   useEffect(() => {
-    // Fetch the list of birds only when the user is logged in
     if (user) {
-      fetch('http://localhost:5002/api/birds')
-        .then(response => response.json())
-        .then(data => setBirds(data));
+      fetch('http://localhost:5002/api/birds', { credentials: 'include' })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);  // Log the data here
+        setBirds(data);
+      });
     }
   }, [user]);
 
@@ -20,6 +24,7 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
+        credentials: 'include',  // Include this line
       });
       const data = await response.json();
       if (response.ok) {
@@ -43,13 +48,7 @@ function App() {
         <p>Logged in as: {user}</p>
       </header>
       <main>
-        <ul>
-          {birds.map(bird => (
-            <li key={bird.birdid}>
-              {bird.birdid}: {bird.bird}
-            </li>
-          ))}
-        </ul>
+        <BirdList birds={birds} />  // Use BirdList to display the birds
       </main>
     </div>
   );
