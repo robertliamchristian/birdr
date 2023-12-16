@@ -1,13 +1,17 @@
-from flask import Flask, jsonify
+
+
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from werkzeug.security import generate_password_hash
-from flask_login import login_user, current_user, LoginManager
+from werkzeug.security import generate_password_hash, check_password_hash  # Import check_password_hash here
+from flask_login import login_user, current_user, LoginManager, UserMixin, logout_user, login_required
 
 app = Flask(__name__)
-CORS(app)  # This will allow cross-origin requests from your React app
+CORS(app, supports_credentials=True) 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+app.secret_key = 'your_really_secret_key_here'
 
 # Configure your database connection here
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://wpuhuargucydbt:e8f85ea517fa5809ce3693691455d866fb90936294eea12d9479c6a262419477@ec2-3-234-126-10.compute-1.amazonaws.com:5432/d73l1lvoh2a6o'
@@ -37,11 +41,35 @@ class Log(db.Model):
         }
     
 
-
 @app.route('/api/birds', methods=['GET'])
 def get_birds():
     birds = Log.query.all()  # Removed with_entities to get full Log instances
     return jsonify([bird.to_dict() for bird in birds])
+
+
+#start user logic
+class User(UserMixin, db.Model):
+    __tablename__ = 'alluser'  
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    insert_date = db.Column(db.DateTime, nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(username=data['username']).first()
+
+    if user and user.check_password(data['password']):
+        login_user(user)
+        return jsonify({'status': 'success', 'message': 'Logged in successfully', 'username': user.username})
+    else:
+        return jsonify({'status': 'fail', 'message': 'Invalid username or password'}), 401
 
 
 
