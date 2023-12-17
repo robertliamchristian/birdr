@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import BirdSuggestions from './BirdSuggestions';
 
-function AddBird({ onAddBird }) {
+function AddBird({ onAddBird, onBirdNameChange }) {
   const [birdName, setBirdName] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
     onAddBird(birdName);
     setBirdName('');  // Clear the input
+  };
+
+  const handleSuggestionClick = (bird) => {
+    setBirdName(bird);
+    onBirdNameChange(bird);
   };
 
   return (
@@ -22,7 +27,7 @@ function AddBird({ onAddBird }) {
         />
         <button type="submit">Add Bird</button>
       </form>
-      <BirdSuggestions query={birdName} onSuggestionClick={setBirdName} /> {/* Pass setBirdName as onSuggestionClick */}
+      <BirdSuggestions query={birdName} onSuggestionClick={handleSuggestionClick} />
     </div>
   );
 }

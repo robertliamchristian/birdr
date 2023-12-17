@@ -153,11 +153,6 @@ def get_bird_suggestions():
     birds = Log.query.filter(Log.bird.ilike(f'%{query}%')).all()
     return jsonify([bird.bird for bird in birds])
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  
-    app.run(debug=True, port=5002)
-
 @app.route('/api/birds/colors', methods=['GET'])
 @login_required
 def get_birds_by_colors():
@@ -179,5 +174,23 @@ def get_birds_by_colors():
         all()
 
     return jsonify([bird.to_dict() for bird in birds])
+
+@app.route('/api/colors', methods=['GET'])
+@login_required
+def get_colors():
+    # Query all distinct colors
+    colors = db.session.query(ColorDim.color).distinct().all()
+
+    # Convert list of tuples to list of strings
+    colors = [color[0] for color in colors]
+
+    return jsonify(colors)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  
+    app.run(debug=True, port=5002)
+
+
 
 
