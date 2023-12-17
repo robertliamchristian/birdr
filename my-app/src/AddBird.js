@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import BirdSuggestions from './BirdSuggestions';
 
 function AddBird({ onAddBird }) {
-    const [birdName, setBirdName] = useState('');
-  
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      onAddBird(birdName);
-      setBirdName('');  // Clear the input
-    };
-  
-    return (
+  const [birdName, setBirdName] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onAddBird(birdName);
+    setBirdName('');  // Clear the input
+  };
+
+  return (
+    <div>
       <form onSubmit={handleSubmit}>
         <input
           type="text" 
@@ -20,7 +22,9 @@ function AddBird({ onAddBird }) {
         />
         <button type="submit">Add Bird</button>
       </form>
-    );
-  }
+      <BirdSuggestions query={birdName} onSuggestionClick={setBirdName} /> {/* Pass setBirdName as onSuggestionClick */}
+    </div>
+  );
+}
 
 export default AddBird;

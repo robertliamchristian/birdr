@@ -3,10 +3,12 @@ import Login from './Login';
 import BirdList from './BirdList';
 import AddBird from './AddBird';
 import './App.css';
+import BirdSuggestions from './BirdSuggestions';
 
 function App() {
   const [user, setUser] = useState(null);
   const [birds, setBirds] = useState([]);
+  const [birdName, setBirdName] = useState(''); // Add this line
 
   const fetchBirds = () => {
     fetch('http://localhost:5002/api/birds', { credentials: 'include' })
@@ -73,7 +75,8 @@ function App() {
       </header>
       <main>
         <div className="bird-entry">
-          <AddBird onAddBird={handleAddBird} />
+          <AddBird onAddBird={handleAddBird} onBirdNameChange={setBirdName} /> {/* Pass setBirdName as a prop */}
+          <BirdSuggestions query={birdName} /> {/* Add this line */}
         </div>
         <div className="bird-list">
           <BirdList birds={birds} />

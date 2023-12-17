@@ -62,6 +62,17 @@ class UserList(db.Model):
     title = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
+class ColorDim(db.Model):
+    __tablename__ = 'color_dim'
+    color_id = db.Column(db.Integer, primary_key=True)
+    color = db.Column(db.String(255), nullable=False)
+
+class ColorJunction(db.Model):
+    __tablename__ = 'color_junction'
+    color_bird_assoc_id = db.Column(db.Integer, primary_key=True)
+    birdref = db.Column(db.Integer, db.ForeignKey('log.birdid'))
+    color_ref = db.Column(db.Integer, db.ForeignKey('color_dim.color_id'))
+
 @app.route('/api/birds', methods=['GET'])
 @login_required
 def get_birds():
@@ -135,9 +146,38 @@ def add_sighting():
 
     return jsonify(sighting.to_dict()), 201
 
+# start suggestion logic
+@app.route('/api/birds/suggestions', methods=['GET'])
+def get_bird_suggestions():
+    query = request.args.get('query')
+    birds = Log.query.filter(Log.bird.ilike(f'%{query}%')).all()
+    return jsonify([bird.bird for bird in birds])
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  
     app.run(debug=True, port=5002)
+
+@app.route('/api/birds/colors', methods=['GET'])
+@login_required
+def get_birds_by_colors():
+    colors = request.args.getlist('color')  
+
+    if not colors:
+        return jsonify({'error': 'No colors provided'}), 400
+
+    # Convert colors to uppercase to match database
+    colors = [color.upper() for color in colors]
+
+    # Query birds that match all colors
+    birds = db.session.query(Log).\
+        join(ColorJunction, Log.birdid == ColorJunction.birdref).\
+        join(ColorDim, ColorJunction.color_ref == ColorDim.color_id).\
+        filter(ColorDim.color.in_(colors)).\
+        group_by(Log.birdid, Log.bird).\
+        having(db.func.count() == len(colors)).\
+        all()
+
+    return jsonify([bird.to_dict() for bird in birds])
 
 
