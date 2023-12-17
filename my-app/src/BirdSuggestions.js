@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 
-function BirdSuggestions({ query, colors, onSuggestionClick }) { // Add colors prop
+function BirdSuggestions({ query, colors, onSuggestionClick }) {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     if (query || colors.length > 0) {
-      // Include colors in the fetch request
-      fetch(`http://localhost:5002/api/birds/suggestions?query=${query}&colors=${colors.join(',')}`)
+      let url = new URL('http://localhost:5002/api/birds/suggestions');
+      let params = new URLSearchParams({ query: query });
+  
+      // Append each color as a separate entry
+      colors.forEach(color => params.append('color', color));
+      url.search = params.toString();
+  
+      console.log(url.toString());
+      fetch(url)
         .then(response => response.json())
-        .then(data => setSuggestions(data));
+        .then(data => {
+          console.log(data);
+          setSuggestions(data);
+        });
     } else {
       setSuggestions([]);
     }
-  }, [query, colors]); // Add colors to the dependency array
+  }, [query, colors]);
+  
 
   return (
     <ul>

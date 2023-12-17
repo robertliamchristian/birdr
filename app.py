@@ -8,6 +8,14 @@ from flask_login import login_user, current_user, LoginManager, UserMixin, logou
 from sqlalchemy.sql.expression import case
 from sqlalchemy.orm.exc import NoResultFound
 import datetime
+import logging
+from flask_cors import CORS
+from sqlalchemy import distinct, case, func
+
+app = Flask(__name__)
+CORS(app)
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True) 
@@ -147,33 +155,30 @@ def add_sighting():
     return jsonify(sighting.to_dict()), 201
 
 # start suggestion logic
+from sqlalchemy import func, distinct, case
+
 @app.route('/api/birds/suggestions', methods=['GET'])
+#@login_required
 def get_bird_suggestions():
-    query = request.args.get('query')
-    birds = Log.query.filter(Log.bird.ilike(f'%{query}%')).all()
+    query = request.args.get('query', default = '', type = str)
+    colors = request.args.getlist('color')
+
+    if colors:
+        colors = [color.upper() for color in colors]
+
+        birds = db.session.query(Log.bird).\
+            join(ColorJunction, Log.birdid == ColorJunction.birdref).\
+            join(ColorDim, ColorJunction.color_ref == ColorDim.color_id).\
+            filter(Log.bird.ilike(f'%{query}%')).\
+            group_by(Log.birdid, Log.bird).\
+            having(func.count(distinct(case({ColorDim.color.in_(colors): ColorDim.color}, else_=None))) == len(colors)).\
+            all()
+    else:
+        birds = Log.query.filter(Log.bird.ilike(f'%{query}%')).all()
+
     return jsonify([bird.bird for bird in birds])
 
-@app.route('/api/birds/colors', methods=['GET'])
-#@login_required
-def get_birds_by_colors():
-    colors = request.args.getlist('color')  
 
-    if not colors:
-        return jsonify({'error': 'No colors provided'}), 400
-
-    # Convert colors to uppercase to match database
-    colors = [color.upper() for color in colors]
-
-    # Query birds that match all colors
-    birds = db.session.query(Log).\
-        join(ColorJunction, Log.birdid == ColorJunction.birdref).\
-        join(ColorDim, ColorJunction.color_ref == ColorDim.color_id).\
-        filter(ColorDim.color.in_(colors)).\
-        group_by(Log.birdid, Log.bird).\
-        having(db.func.count() == len(colors)).\
-        all()
-
-    return jsonify([bird.to_dict() for bird in birds])
 
 @app.route('/api/colors', methods=['GET'])
 #@login_required
