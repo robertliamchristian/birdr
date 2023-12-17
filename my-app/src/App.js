@@ -8,7 +8,8 @@ import BirdSuggestions from './BirdSuggestions';
 function App() {
   const [user, setUser] = useState(null);
   const [birds, setBirds] = useState([]);
-  const [birdName, setBirdName] = useState(''); // Add this line
+  const [birdName, setBirdName] = useState('');
+  const [colors, setColors] = useState([]); // Add state for colors
 
   const fetchBirds = () => {
     fetch('http://localhost:5002/api/birds', { credentials: 'include' })
@@ -61,6 +62,10 @@ function App() {
     }
   };
 
+  const handleColorSelect = (selectedColors) => { // Add handler for color selection
+    setColors(selectedColors);
+  };
+
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
@@ -75,8 +80,8 @@ function App() {
       </header>
       <main>
         <div className="bird-entry">
-          <AddBird onAddBird={handleAddBird} onBirdNameChange={setBirdName} /> {/* Pass setBirdName as a prop */}
-          <BirdSuggestions query={birdName} /> {/* Add this line */}
+          <AddBird onAddBird={handleAddBird} onBirdNameChange={setBirdName} onColorSelect={handleColorSelect} /> {/* Pass handleColorSelect as a prop */}
+          <BirdSuggestions query={birdName} colors={colors} /> {/* Pass colors to BirdSuggestions */}
         </div>
         <div className="bird-list">
           <BirdList birds={birds} />

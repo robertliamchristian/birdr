@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import BirdSuggestions from './BirdSuggestions';
+import IdentifyBird from './IdentifyBird'; // Import IdentifyBird
 
 function AddBird({ onAddBird, onBirdNameChange }) {
   const [birdName, setBirdName] = useState('');
+  const [colors, setColors] = useState([]); // Add state for colors
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -13,6 +15,10 @@ function AddBird({ onAddBird, onBirdNameChange }) {
   const handleSuggestionClick = (bird) => {
     setBirdName(bird);
     onBirdNameChange(bird);
+  };
+
+  const handleColorSelect = (selectedColors) => { // Add handler for color selection
+    setColors(selectedColors);
   };
 
   return (
@@ -27,7 +33,8 @@ function AddBird({ onAddBird, onBirdNameChange }) {
         />
         <button type="submit">Add Bird</button>
       </form>
-      <BirdSuggestions query={birdName} onSuggestionClick={handleSuggestionClick} />
+      <IdentifyBird onColorSelect={handleColorSelect} /> {/* Add IdentifyBird component */}
+      <BirdSuggestions query={birdName} colors={colors} onSuggestionClick={handleSuggestionClick} /> {/* Pass colors to BirdSuggestions */}
     </div>
   );
 }

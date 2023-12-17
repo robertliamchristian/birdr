@@ -154,7 +154,7 @@ def get_bird_suggestions():
     return jsonify([bird.bird for bird in birds])
 
 @app.route('/api/birds/colors', methods=['GET'])
-@login_required
+#@login_required
 def get_birds_by_colors():
     colors = request.args.getlist('color')  
 
@@ -176,7 +176,7 @@ def get_birds_by_colors():
     return jsonify([bird.to_dict() for bird in birds])
 
 @app.route('/api/colors', methods=['GET'])
-@login_required
+#@login_required
 def get_colors():
     # Query all distinct colors
     colors = db.session.query(ColorDim.color).distinct().all()
