@@ -2,37 +2,86 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.header {
+  background-color: #FFC0CB; /* Reddish pink color */
+  text-align: center;
+  padding: 20px;
+  font-size: 2em;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.bird-entry {
+  margin: 10px auto; /* Center the div horizontally */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f2f2f2; /* Light gray background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+  position: fixed; /* Fixed position */
+  top: 105px; /* Start below the .logo div */
+  width: 90%;
+  left: 50%; /* Move the div to the center horizontally */
+  transform: translateX(-50%); /* Adjust the position to center */
+  border-radius: 10px; /* Rounded corners */
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.bird-entry:hover {
+  background-color: #e6e6e6; /* Lighter gray background color on hover */
 }
+
+.logo {
+  height: 100px;
+  width: 100%;
+  margin: 10px auto;
+  background-color: #FF6B6B; /* Reddish pink color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* Fixed position */
+  top: 0; /* Stick to the top of the page */
+  z-index: 999; /* Ensure the logo is on top of other elements */
+  border-radius: 10px; /* Rounded corners */
+}
+
+
+
+.bird-list {
+  margin: 0 auto;
+  padding: 0;
+  list-style: decimal;
+  max-width: 700px;
+  width: 100%;
+  margin-top: 210px; /* Adjust the value as needed */
+}
+
+.bird-list li {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #ccc;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loggedin {
+  position: fixed; /* Fixed position */
+  top: 0; /* Stick to the top of the page */
+  z-index: 999; /* Ensure the .loggedin is on top of other elements */
+  width: 100%; /* Take up the full width */
+  margin-bottom: 30px;
+  padding: 0;
+  list-style: none;
+  max-width: 500px;
+  position: fixed;
+  text-align: center;
+  width: 100%; /* Take up the full width */
+  z-index: 999; /* Ensure the .loggedin is on top of other elements */
+}
+
+
+
+

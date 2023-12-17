@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import BirdList from './BirdList';
-import AddBird from './AddBird';  // Import AddBird
+import AddBird from './AddBird';
+import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,7 +34,7 @@ function App() {
     if (response.ok) {
       const newSighting = await response.json();
       console.log('New sighting added:', newSighting);
-      fetchBirds();  // Re-fetch the list of birds
+      fetchBirds();
     } else {
       console.error('Failed to add sighting');
     }
@@ -45,7 +46,7 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
-        credentials: 'include',  // Include this line
+        credentials: 'include',
       });
       const data = await response.json();
       if (response.ok) {
@@ -65,12 +66,18 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Birdedex</h1>
-        <p>Logged in as: {user}</p>
+        <div className="logo">
+          <h1>Birdedex</h1>
+        </div>
+        <div className='loggedin'><p>Logged in as: {user}</p></div>
       </header>
       <main>
-        <AddBird onAddBird={handleAddBird} />  // Use AddBird to add birds
-        <BirdList birds={birds} />  // Use BirdList to display the birds
+        <div className="bird-entry">
+          <AddBird onAddBird={handleAddBird} />
+        </div>
+        <div className="bird-list">
+          <BirdList birds={birds} />
+        </div>
       </main>
     </div>
   );
