@@ -81,6 +81,17 @@ class ColorJunction(db.Model):
     birdref = db.Column(db.Integer, db.ForeignKey('log.birdid'))
     color_ref = db.Column(db.Integer, db.ForeignKey('color_dim.color_id'))
 
+class RegionDim(db.Model):
+    __tablename__ = 'region_dim'
+    id = db.Column(db.Integer, primary_key=True)
+    region = db.Column(db.String(50), nullable=False)
+
+class RegionJunction(db.Model):
+    __tablename__ = 'region_junction'
+    region_association_id = db.Column(db.Integer, primary_key=True)
+    bird_ref = db.Column(db.Integer, db.ForeignKey('log.birdid'))
+    region_ref = db.Column(db.Integer, db.ForeignKey('id.id'))
+
 @app.route('/api/birds', methods=['GET'])
 @login_required
 def get_birds():
@@ -157,24 +168,35 @@ def add_sighting():
 # start suggestion logic
 from sqlalchemy import func, distinct, case
 
-@app.route('/api/birds/suggestions', methods=['GET'])
+@app.route('/api/birdsuggestions', methods=['GET'])
 #@login_required
 def get_bird_suggestions():
     query = request.args.get('query', default = '', type = str)
     colors = request.args.getlist('color')
+    regions = request.args.getlist('region')
 
     if colors:
         colors = [color.upper() for color in colors]
 
-        birds = db.session.query(Log.bird).\
-            join(ColorJunction, Log.birdid == ColorJunction.birdref).\
-            join(ColorDim, ColorJunction.color_ref == ColorDim.color_id).\
-            filter(Log.bird.ilike(f'%{query}%')).\
-            group_by(Log.birdid, Log.bird).\
-            having(func.count(distinct(case({ColorDim.color.in_(colors): ColorDim.color}, else_=None))) == len(colors)).\
-            all()
-    else:
-        birds = Log.query.filter(Log.bird.ilike(f'%{query}%')).all()
+    if regions:
+        regions = [region.upper() for region in regions]
+
+    birds = db.session.query(Log.bird).\
+        outerjoin(ColorJunction, Log.birdid == ColorJunction.birdref).\
+        outerjoin(ColorDim, ColorJunction.color_ref == ColorDim.color_id).\
+        outerjoin(RegionJunction, Log.birdid == RegionJunction.bird_ref).\
+        outerjoin(RegionDim, RegionJunction.region_ref == RegionDim.id).\
+        filter(Log.bird.ilike(f'%{query}%'))
+
+    if colors:
+        birds = birds.group_by(Log.birdid, Log.bird).\
+            having(func.count(distinct(case({ColorDim.color.in_(colors): ColorDim.color}, else_=None))) >= 1)
+
+    if regions:
+        birds = birds.group_by(Log.birdid, Log.bird).\
+            having(func.count(distinct(case({RegionDim.region.in_(regions): RegionDim.region}, else_=None))) >= 1)
+
+    birds = birds.all()
 
     return jsonify([bird.bird for bird in birds])
 
@@ -184,12 +206,20 @@ def get_bird_suggestions():
 #@login_required
 def get_colors():
     # Query all distinct colors
-    colors = db.session.query(ColorDim.color).distinct().all()
-
+    colors = db.session.query(ColorDim.color).distinct().all()  
     # Convert list of tuples to list of strings
     colors = [color[0] for color in colors]
-
     return jsonify(colors)
+
+@app.route('/api/regions', methods=['GET'])
+#@login_required
+def get_regions():
+    # Query all distinct regions
+    regions = db.session.query(RegionDim.region).distinct().all()
+    # Convert list of tuples to list of strings
+    regions = [region[0] for region in regions]
+    return jsonify(regions)
+
 
 if __name__ == '__main__':
     with app.app_context():
