@@ -1,0 +1,5 @@
+errors
+"{'status': '400 BAD_REQUEST', 'code': 'methodInvocation', 'title': ""Field regionCode of regionStatsCmd: Property 'regionCode' threw exception; nested exception is java.lang.IllegalArgumentException: Unable to find matching region type for {US}""}"
+"{'status': '400 BAD_REQUEST', 'code': 'typeMismatch', 'title': 'Field y of regionStatsCmd: This field must be a number only (no decimals, colons, etc.)'}"
+"{'status': '400 BAD_REQUEST', 'code': 'typeMismatch', 'title': 'Field m of regionStatsCmd: This field must be a number only (no decimals, colons, etc.)'}"
+"{'status': '400 BAD_REQUEST', 'code': 'typeMismatch', 'title': 'Field d of regionStatsCmd: This field must be a number only (no decimals, colons, etc.)'}"

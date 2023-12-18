@@ -1,87 +1,92 @@
 .App {
   text-align: center;
 }
-
+/*
 .header {
-  background-color: #FFC0CB; /* Reddish pink color */
+  background-color: #FFC0CB; 
   text-align: center;
   padding: 20px;
   font-size: 2em;
-  color: white;
-}
+  color: #FBEADB;
 
+}
+*/
+
+/*
 .bird-entry {
-  margin: 10px auto; /* Center the div horizontally */
+  text-align: left;
+  margin: 10px auto; 
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #f2f2f2; /* Light gray background color */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
-  transition: background-color 0.3s ease; /* Smooth transition on hover */
-  position: fixed; /* Fixed position */
-  top: 105px; /* Start below the .logo div */
+  background-color: #E45861; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  transition: background-color 0.3s ease; 
+  position: fixed; /* Fixed position 
+  top: 0; 
   width: 90%;
-  left: 50%; /* Move the div to the center horizontally */
-  transform: translateX(-50%); /* Adjust the position to center */
-  border-radius: 10px; /* Rounded corners */
+  left: 50%; 
+  transform: translateX(-50%); 
+  border-radius: 10px; 
 
 }
-
-
+*/
+/*
 .bird-entry:hover {
-  background-color: #e6e6e6; /* Lighter gray background color on hover */
+  background-color: #E64155; /* Lighter gray background color on hover 
 }
-
+*/
+/*
 .logo {
   height: 100px;
   width: 100%;
   margin: 10px auto;
-  background-color: #FF6B6B; /* Reddish pink color */
+  background-color: #51AAB5; 
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed; /* Fixed position */
-  top: 0; /* Stick to the top of the page */
-  z-index: 999; /* Ensure the logo is on top of other elements */
-  border-radius: 10px; /* Rounded corners */
+  position: fixed; 
+  bottom: 0; 
+  z-index: 999; 
+  border-radius: 10px; 
 }
-
-
+*/
 
 .bird-list {
   margin: 0 auto;
   padding: 0;
   list-style: decimal;
   max-width: 700px;
-  width: 100%;
-  margin-top: 210px; /* Adjust the value as needed */
+  width: 90%;
+
+
 }
 
 .bird-list li {
   margin: 0;
   padding: 0;
   border-bottom: 1px solid #ccc;
-  padding: 20px;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
+  list-style: decimal; /* Change list-style to decimal */
 }
-
+/*
 .loggedin {
-  position: fixed; /* Fixed position */
-  top: 0; /* Stick to the top of the page */
-  z-index: 999; /* Ensure the .loggedin is on top of other elements */
-  width: 100%; /* Take up the full width */
+  position: fixed; /* Fixed position 
+  z-index: 999; /* Ensure the .loggedin is on top of other elements 
+  width: 100%; /* Take up the full width 
   margin-bottom: 30px;
   padding: 0;
   list-style: none;
   max-width: 500px;
   position: fixed;
   text-align: center;
-  width: 100%; /* Take up the full width */
-  z-index: 999; /* Ensure the .loggedin is on top of other elements */
+  width: 100%; /* Take up the full width 
+  z-index: 999; /* Ensure the .loggedin is on top of other elements 
 }
-
+*/
 
 
 
