@@ -6,10 +6,11 @@ import './App.css';
 import BirdSuggestions from './BirdSuggestions';
 
 function App() {
-  const [user, setUser] = useState(null);
   const [birds, setBirds] = useState([]);
+  const [user, setUser] = useState(null);
+  const [colors, setColors] = useState([]);
+  const [regions, setRegions] = useState([]);
   const [birdName, setBirdName] = useState('');
-  const [colors, setColors] = useState([]); // Add state for colors
 
   const fetchBirds = () => {
     fetch('http://localhost:5002/api/birds', { credentials: 'include' })
@@ -62,32 +63,36 @@ function App() {
     }
   };
 
-  const handleColorSelect = (selectedColors) => { // Add handler for color selection
+  const handleColorSelect = (selectedColors) => {
     setColors(selectedColors);
   };
 
+  const handleRegionSelect = (selectedRegions) => { // Add handler for region selection 
+    setRegions(selectedRegions);
+  };
+  
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
 
   return (
     <div className="App">
-      <header>
-        <div className="logo">
-          <h1>Birdedex</h1>
-        </div>
-        <div className='loggedin'><p>Logged in as: {user}</p></div>
-      </header>
-      <main>
-        <div className="bird-entry">
-          <AddBird onAddBird={handleAddBird} onBirdNameChange={setBirdName} onColorSelect={handleColorSelect} /> {/* Pass handleColorSelect as a prop */}
-          <BirdSuggestions query={birdName} colors={colors} /> {/* Pass colors to BirdSuggestions */}
-        </div>
-        <div className="bird-list">
-          <BirdList birds={birds} />
-        </div>
-      </main>
+  <header>
+    <div className="logo">
+      <h1>Birdedex</h1>
     </div>
+    <div className='loggedin'><p>Logged in as: {user}</p></div>
+  </header>
+  <main>
+    <div className="bird-entry">
+      <AddBird onAddBird={handleAddBird} onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
+      <BirdSuggestions query={birdName} colors={colors} regions={regions} />
+    </div>
+    <div className="bird-list">
+      <BirdList birds={birds} />
+    </div>
+  </main>
+</div>
   );
 }
 

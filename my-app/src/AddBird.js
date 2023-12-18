@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import BirdSuggestions from './BirdSuggestions';
-import IdentifyBird from './IdentifyBird'; // Import IdentifyBird
+import IdentifyBird from './IdentifyBird';
 
 function AddBird({ onAddBird, onBirdNameChange }) {
   const [birdName, setBirdName] = useState('');
-  const [colors, setColors] = useState([]); // Add state for colors
+  const [colors, setColors] = useState([]);
+  const [regions, setRegions] = useState([]); // Add state for regions
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -17,8 +18,12 @@ function AddBird({ onAddBird, onBirdNameChange }) {
     onBirdNameChange(bird);
   };
 
-  const handleColorSelect = (selectedColors) => { // Add handler for color selection
+  const handleColorSelect = (selectedColors) => {
     setColors(selectedColors);
+  };
+
+  const handleRegionSelect = (selectedRegions) => { // Add handler for region selection
+    setRegions(selectedRegions);
   };
 
   return (
@@ -27,14 +32,13 @@ function AddBird({ onAddBird, onBirdNameChange }) {
         <input
           type="text" 
           value={birdName}
-          onChange={(e) => setBirdName(e.target.value)}
-          placeholder="Enter bird name"
-          required
+          onChange={event => setBirdName(event.target.value)}
+          placeholder="Enter a bird name"
         />
         <button type="submit">Add Bird</button>
       </form>
-      <IdentifyBird onColorSelect={handleColorSelect} /> {/* Add IdentifyBird component */}
-      <BirdSuggestions query={birdName} colors={colors} onSuggestionClick={handleSuggestionClick} /> {/* Pass colors to BirdSuggestions */}
+      <IdentifyBird onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} /> {/* Pass handleRegionSelect to IdentifyBird */}
+      <BirdSuggestions query={birdName} colors={colors} regions={regions} onSuggestionClick={handleSuggestionClick} /> {/* Pass regions to BirdSuggestions */}
     </div>
   );
 }
