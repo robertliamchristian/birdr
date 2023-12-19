@@ -12,6 +12,7 @@
   min-height: 60vh;
   margin: 0 auto;
   background-color: #3D437E;
+  
 }
 
 .main-content {
@@ -28,6 +29,8 @@
   padding-top: 0;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .top-card {
@@ -95,11 +98,14 @@
 .bird-suggestions {
   position: absolute;
   width: 100%;
-  top: 100%;
+  top: 0;
+  z-index: 1; 
 }
 
 .bottom-card {
-
+  position: relative; 
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .bird-list {
@@ -125,3 +131,67 @@
   width: 35px;
   color: #000557;
 }
+
+.bottom-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px;
+  max-height: 50px;
+}
+
+.logo {
+  text-align: left;
+  
+}
+
+.logo h3 {
+  margin: 0; 
+  margin-top: 3px;
+  padding: 0; 
+  color: white;
+  text-align: left; 
+  margin-left: 20px;
+
+}
+
+.loggedin {
+  text-align: right;
+}
+
+.loggedin p {
+  margin: 0;
+  margin-top: 10px;
+  padding: 0;
+  color: white;
+  text-align: 20px;
+  margin-right: 20px;
+  font-size: 9pt;
+}
+
+
+
+/* For Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Make the track (background) transparent */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the slider */
+  border-radius: 6px; /* Roundness of the slider */
+}
+
+/* When hovering over the scrollbar */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the slider when hovered */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin; /* Width of the scrollbar */
+  scrollbar-color: #888 transparent; /* Color of the slider and track */
+}
+

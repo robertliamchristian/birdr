@@ -101,11 +101,13 @@ function App() {
               </div>
             </div>
           </div>
+          <div className='bottom-container'>
           <div className="logo">
-            <h1>Birdedex</h1>
+            <h3>Birdedex</h3>
           </div>
           <div className='loggedin'>
             <p>Logged in as: {user}</p>
+          </div>
           </div>
         </div>
       </main>

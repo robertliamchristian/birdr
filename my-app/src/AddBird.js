@@ -35,7 +35,7 @@ function AddBird({ onAddBird, onBirdNameChange }) {
           type="text" 
           value={birdName}
           onChange={event => setBirdName(event.target.value)}
-          placeholder="Enter a bird name"
+          placeholder="Enter Bird Name..."
         />
         <button type="submit">ADD BIRD</button>
       </form>
