@@ -38,3 +38,4 @@ function BirdSuggestions({ query, colors, regions, onSuggestionClick }) {
 }
 
 export default BirdSuggestions;
+

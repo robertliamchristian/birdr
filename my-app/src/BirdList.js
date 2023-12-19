@@ -1,18 +1,18 @@
 function BirdList({ birds }) {
   return (
-    <ul>
+    <ol>
       {birds.map(bird => (
         <li 
           key={bird.birdid}
           style={{ 
             fontWeight: bird.seen === 'Sighted' ? 'bold' : 'normal',
             fontStyle: bird.seen === 'Sighted' ? 'normal' : 'italic',
-            color: bird.seen === 'Sighted' ? 'black' : 'gray'
+            color: bird.seen === 'Sighted' ? '#000557' : 'gray'
           }}>
           {bird.bird}
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }
   
