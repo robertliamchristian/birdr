@@ -77,23 +77,41 @@ function App() {
 
   return (
     <div className="App">
-  <header>
-    <div className="logo">
-      <h1>Birdedex</h1>
+      <header>
+        {/* ...header content... */}
+      </header>
+      <main>
+        <div className="main-content">
+          <div className="card">
+            <div className="top-card">
+              <div className="enter-bird">
+                {/* Your bird entry form components here */}
+                <AddBird onAddBird={handleAddBird} onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
+              </div>
+              <div className="bird-suggestions">
+                {/* Your bird suggestions components here */}
+                <BirdSuggestions query={birdName} colors={colors} regions={regions} />
+              </div>
+              
+            </div>
+            <div className="bottom-card">
+              <div className="bird-list">
+                {/* Your bird list component here */}
+                <BirdList birds={birds} />
+              </div>
+            </div>
+          </div>
+          <div className="logo">
+            <h1>Birdedex</h1>
+          </div>
+          <div className='loggedin'>
+            <p>Logged in as: {user}</p>
+          </div>
+        </div>
+      </main>
     </div>
-    <div className='loggedin'><p>Logged in as: {user}</p></div>
-  </header>
-  <main>
-    <div className="bird-entry">
-      <AddBird onAddBird={handleAddBird} onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
-      <BirdSuggestions query={birdName} colors={colors} regions={regions} />
-    </div>
-    <div className="bird-list">
-      <BirdList birds={birds} />
-    </div>
-  </main>
-</div>
   );
+  
 }
 
 export default App;

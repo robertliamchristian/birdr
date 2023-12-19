@@ -4,7 +4,7 @@ function BirdSuggestions({ query, colors, regions, onSuggestionClick }) {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
-    if (query || colors.length > 0 || regions.length > 0) {
+    if (query && (query.length > 0 || colors.length > 0 || regions.length > 0)) {
       let url = new URL('http://localhost:5002/api/birdsuggestions');
       let params = new URLSearchParams({ query: query });
   

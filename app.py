@@ -169,37 +169,32 @@ def add_sighting():
 from sqlalchemy import func, distinct, case
 
 @app.route('/api/birdsuggestions', methods=['GET'])
-#@login_required
 def get_bird_suggestions():
-    query = request.args.get('query', default = '', type = str)
+    query = request.args.get('query', '')
     colors = request.args.getlist('color')
     regions = request.args.getlist('region')
 
-    if colors:
-        colors = [color.upper() for color in colors]
-
-    if regions:
-        regions = [region.upper() for region in regions]
-
-    birds = db.session.query(Log.bird).\
+    subquery = db.session.query(Log.bird, Log.birdid).\
         outerjoin(ColorJunction, Log.birdid == ColorJunction.birdref).\
         outerjoin(ColorDim, ColorJunction.color_ref == ColorDim.color_id).\
         outerjoin(RegionJunction, Log.birdid == RegionJunction.bird_ref).\
         outerjoin(RegionDim, RegionJunction.region_ref == RegionDim.id).\
-        filter(Log.bird.ilike(f'%{query}%'))
+        filter(Log.bird.ilike(f'%{query}%')).\
+        subquery()
+
+    birds = db.session.query(distinct(subquery.c.bird))
 
     if colors:
-        birds = birds.group_by(Log.birdid, Log.bird).\
+        birds = birds.group_by(subquery.c.birdid, subquery.c.bird).\
             having(func.count(distinct(case({ColorDim.color.in_(colors): ColorDim.color}, else_=None))) >= 1)
 
     if regions:
-        birds = birds.group_by(Log.birdid, Log.bird).\
+        birds = birds.group_by(subquery.c.birdid, subquery.c.bird).\
             having(func.count(distinct(case({RegionDim.region.in_(regions): RegionDim.region}, else_=None))) >= 1)
 
-    birds = birds.all()
+    birds = birds.limit(10).all()  # Limit to top 10 results
 
-    return jsonify([bird.bird for bird in birds])
-
+    return jsonify([bird[0] for bird in birds])
 
 
 @app.route('/api/colors', methods=['GET'])

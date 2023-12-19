@@ -6,6 +6,8 @@ function AddBird({ onAddBird, onBirdNameChange }) {
   const [birdName, setBirdName] = useState('');
   const [colors, setColors] = useState([]);
   const [regions, setRegions] = useState([]); // Add state for regions
+  const [showIdentifyBird, setShowIdentifyBird] = useState(false); // Add state for showing IdentifyBird
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -27,20 +29,21 @@ function AddBird({ onAddBird, onBirdNameChange }) {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="add-bird-container">
+      <form className="bird-form" onSubmit={handleSubmit}>
         <input
           type="text" 
           value={birdName}
           onChange={event => setBirdName(event.target.value)}
           placeholder="Enter a bird name"
         />
-        <button type="submit">Add Bird</button>
+        <button type="submit">ADD BIRD</button>
       </form>
-      <IdentifyBird onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} /> {/* Pass handleRegionSelect to IdentifyBird */}
-      <BirdSuggestions query={birdName} colors={colors} regions={regions} onSuggestionClick={handleSuggestionClick} /> {/* Pass regions to BirdSuggestions */}
+      {showIdentifyBird && <IdentifyBird onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />}
+      <BirdSuggestions query={birdName} colors={colors} regions={regions} onSuggestionClick={handleSuggestionClick} />
     </div>
   );
+  
 }
 
 export default AddBird;

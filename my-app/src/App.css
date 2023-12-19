@@ -1,92 +1,101 @@
 .App {
-  text-align: center;
-}
-/*
-.header {
-  background-color: #FFC0CB; 
-  text-align: center;
-  padding: 20px;
-  font-size: 2em;
-  color: #FBEADB;
-
-}
-*/
-
-/*
-.bird-entry {
-  text-align: left;
-  margin: 10px auto; 
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #E45861; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-  transition: background-color 0.3s ease; 
-  position: fixed; /* Fixed position 
-  top: 0; 
-  width: 90%;
-  left: 50%; 
-  transform: translateX(-50%); 
-  border-radius: 10px; 
-
-}
-*/
-/*
-.bird-entry:hover {
-  background-color: #E64155; /* Lighter gray background color on hover 
-}
-*/
-/*
-.logo {
-  height: 100px;
-  width: 100%;
-  margin: 10px auto;
-  background-color: #51AAB5; 
+  background-color: #3D437E;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  position: fixed; 
-  bottom: 0; 
-  z-index: 999; 
-  border-radius: 10px; 
+  align-items: flex-start;
+  padding-top: 50px;
 }
-*/
+
+.main {
+  width: 95%;
+  min-height: 60vh; /* Use min-height to ensure it takes up at least 60% of the viewport height */
+  margin: 0 auto;
+  background-color: #3D437E; /* This should color the entire .main div purple */
+}
+
+.main-content {
+  width: 95%;
+  min-height: 60vh; /* Use min-height to ensure it takes up at least 60% of the viewport height */
+  margin: 0 auto;
+  background-color: #3D437E; /* This should color the entire .main div purple */
+}
+
+.card {
+  background-color: #F5EDDF;
+  width: 95%;
+  margin: 0 auto;
+  padding-top: 0; /* Changed from 50px to 0 */
+}
+
+.top-card {
+  background-color: #E8A3BE;
+  height: 100px; /* Make sure you have a semicolon here */
+  
+}
+
+.enter-bird {
+  display: flex; /* Enables Flexbox */
+  flex-direction: column; /* Stacks children vertically */
+  justify-content: center; /* Centers children vertically within the container */
+  align-items: flex-start; /* Aligns children to the start (left) of the container */
+  padding-left: 10px; /* Adds padding on the left */
+  height: 100%; /* If you want .enter-bird to fill the height of its parent (.top-card) */
+}
+
+.add-bird-container {
+  display: flex; /* Enables Flexbox */
+  flex-direction: column; /* Stacks children vertically */
+}
+
+.bird-form input {
+  margin-bottom: 10px; /* Adds space below the input field */
+  margin-top: 30px; /* Adds space above the input field */
+  background-color: transparent; /* Makes the input background transparent */
+  color: white;
+  font-weight: bold;
+  border: none; /* Removes the border */
+  outline: none; /* Removes the focus outline */
+  box-shadow: none; /* Removes any box shadows */
+  /* Add other styles for the input here if needed */
+}
+
+
+.bird-form input {
+  margin-bottom: 10px; /* Adds space below the input field */
+  margin-top: 30px;
+  background-color: transparent; /* Remove the shaded box */
+  /* Add other styles for the input here if needed */
+}
+
+.bird-form button {
+  background-color: #F50348; /* Makes the background red */
+  color: white; /* Makes the text white */
+  border-radius: 20px; /* Rounds the corners */
+  padding: 10px; /* Adds some padding */
+  border: none; /* Removes the default border */
+  cursor: pointer; /* Changes the cursor to a pointer when hovering over the button */
+  font-size: 7pt; /* Sets the font size */
+  font-weight: bold; /* Sets the font weight */
+  height: 25px;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centers the text horizontally */
+}
+
+
+
+.bird-suggestions {
+
+}
+
+
+.bottom-card {
+
+}
 
 .bird-list {
-  margin: 0 auto;
-  padding: 0;
-  list-style: decimal;
-  max-width: 700px;
-  width: 90%;
-
 
 }
-
-.bird-list li {
-  margin: 0;
-  padding: 0;
-  border-bottom: 1px solid #ccc;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: left;
-  list-style: decimal; /* Change list-style to decimal */
-}
-/*
-.loggedin {
-  position: fixed; /* Fixed position 
-  z-index: 999; /* Ensure the .loggedin is on top of other elements 
-  width: 100%; /* Take up the full width 
-  margin-bottom: 30px;
-  padding: 0;
-  list-style: none;
-  max-width: 500px;
-  position: fixed;
-  text-align: center;
-  width: 100%; /* Take up the full width 
-  z-index: 999; /* Ensure the .loggedin is on top of other elements 
-}
-*/
-
-
 
