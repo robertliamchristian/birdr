@@ -2,22 +2,28 @@ import React, { useState } from 'react';
 import BirdSuggestions from './BirdSuggestions';
 import IdentifyBird from './IdentifyBird';
 
-function AddBird({ onAddBird, onBirdNameChange }) {
-  const [birdName, setBirdName] = useState('');
+function AddBird({ onAddBird }) {
+  const [inputValue, setInputValue] = useState(''); // New state for the input value
+  const [birdName, setBirdName] = useState(''); // This will be the bird name for the suggestions
   const [colors, setColors] = useState([]);
-  const [regions, setRegions] = useState([]); // Add state for regions
-  const [showIdentifyBird, setShowIdentifyBird] = useState(false); // Add state for showing IdentifyBird
-
+  const [regions, setRegions] = useState([]);
+  const [showIdentifyBird, setShowIdentifyBird] = useState(false); // Re-added this line
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAddBird(birdName);
-    setBirdName('');  // Clear the input
+    onAddBird(inputValue); // Use inputValue when adding bird
+    setInputValue(''); // Clear the input
+    setBirdName(''); // Also clear the bird name for suggestions
+  };
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+    setBirdName(event.target.value); // Set birdName for suggestions when typing
   };
 
   const handleSuggestionClick = (bird) => {
-    setBirdName(bird);
-    onBirdNameChange(bird);
+    setInputValue(bird); // Set inputValue to the clicked suggestion
+    setBirdName(''); // Clear the bird name for suggestions so it doesn't show in the suggestion list
   };
 
   const handleColorSelect = (selectedColors) => {
@@ -31,14 +37,14 @@ function AddBird({ onAddBird, onBirdNameChange }) {
   return (
     <div className="add-bird-container">
       <form className="bird-form" onSubmit={handleSubmit}>
-        <input
-          type="text" 
-          value={birdName}
-          onChange={event => setBirdName(event.target.value)}
-          placeholder="Enter Bird Name..."
-        />
-        <button type="submit">ADD BIRD</button>
-      </form>
+    <input
+      type="text"
+      value={inputValue} // Make sure this is using inputValue
+      onChange={handleInputChange} // Ensure this is handling changes
+      placeholder="Enter Bird Name..."
+    />
+    <button type="submit">ADD BIRD</button>
+  </form>
       {showIdentifyBird && <IdentifyBird onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />}
       <BirdSuggestions query={birdName} colors={colors} regions={regions} onSuggestionClick={handleSuggestionClick} />
     </div>
