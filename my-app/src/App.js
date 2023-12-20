@@ -88,7 +88,7 @@ function App() {
                 {/* Your bird entry form components here */}
                 <AddBird onAddBird={handleAddBird} onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
               </div>
-              <div className="bird-suggestions">
+              <div className="bs">
                 {/* Your bird suggestions components here */}
                 <BirdSuggestions query={birdName} colors={colors} regions={regions} />
               </div>

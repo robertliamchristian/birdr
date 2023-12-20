@@ -27,6 +27,7 @@ function BirdSuggestions({ query, colors, regions, onSuggestionClick }) {
   
 
   return (
+    <div className='slist'>
     <ul>
       {suggestions.map((suggestion, index) => (
         <li key={index} onClick={() => onSuggestionClick(suggestion)}>
@@ -34,6 +35,7 @@ function BirdSuggestions({ query, colors, regions, onSuggestionClick }) {
         </li>
       ))}
     </ul>
+    </div>
   );
 }
 
