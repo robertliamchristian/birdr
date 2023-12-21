@@ -4,6 +4,7 @@ import BirdList from './BirdList';
 import AddBird from './AddBird';
 import './App.css';
 import BirdSuggestions from './BirdSuggestions';
+import DropdownMenu from './DropdownMenu';
 
 function App() {
   const [birds, setBirds] = useState([]);
@@ -92,7 +93,7 @@ function App() {
                 {/* Your bird suggestions components here */}
                 <BirdSuggestions query={birdName} colors={colors} regions={regions} />
               </div>
-              
+              <div className='dropdown'><DropdownMenu /></div>
             </div>
             <div className="bottom-card">
               <div className="bird-list">

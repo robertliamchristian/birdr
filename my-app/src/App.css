@@ -225,3 +225,25 @@
   scrollbar-color: #888 transparent; /* Color of the slider and track */
 }
 
+.dropdown {
+  min-height: 50px;
+  margin-top: 20px;
+  z-index: 1;
+  margin-left: 5px;
+}
+
+.dropdown button {
+  background-color: #E8A3BE;
+  color: white;
+  border-radius: 20px;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 7pt;
+  font-weight: bold;
+  height: 25px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
