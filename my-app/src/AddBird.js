@@ -9,6 +9,7 @@ function AddBird({ onAddBird }) {
   const [regions, setRegions] = useState([]);
   const [showIdentifyBird, setShowIdentifyBird] = useState(false); // Re-added this line
 
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     onAddBird(inputValue); // Use inputValue when adding bird
