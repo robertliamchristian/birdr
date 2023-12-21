@@ -62,13 +62,6 @@ class UserSighting(db.Model):
     
     def to_dict(self):
         return {'sightingid': self.sightingid, 'birdref': self.birdref, 'userid': self.userid, 'sighting_time': self.sighting_time, 'listid': self.listid}
-    
-class UserList(db.Model):
-    __tablename__ = 'user_list'
-    listid = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('alluser.id'))
-    title = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
 
 class ColorDim(db.Model):
     __tablename__ = 'color_dim'
@@ -91,6 +84,13 @@ class RegionJunction(db.Model):
     region_association_id = db.Column(db.Integer, primary_key=True)
     bird_ref = db.Column(db.Integer, db.ForeignKey('log.birdid'))
     region_ref = db.Column(db.Integer, db.ForeignKey('id.id'))
+
+class UserList(db.Model):
+    __tablename__ = 'user_list'
+    listid = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.Integer, db.ForeignKey('alluser.id'))
+    title = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
 
 @app.route('/api/birds', methods=['GET'])
 @login_required
@@ -214,6 +214,148 @@ def get_regions():
     # Convert list of tuples to list of strings
     regions = [region[0] for region in regions]
     return jsonify(regions)
+
+
+
+
+
+#start list logic
+
+
+@app.route('/api/userlist', methods=['GET', 'POST'])
+@login_required
+def userlist():
+    if request.method == 'POST':
+        list_name = request.form.get('list_name')
+        if list_name:
+            new_list = UserList(userid=current_user.id, title=list_name)
+            db.session.add(new_list)
+            db.session.commit()
+            return jsonify({'status': 'success', 'message': 'List created', 'listid': new_list.listid})
+
+        listid = request.form.get('listid')
+        bird_name = request.form.get('bird')
+        if listid and bird_name:
+            new_bird = Log.query.filter_by(bird=bird_name).first()
+            if new_bird:
+                new_sighting = UserSighting(
+                    birdref=new_bird.birdid,
+                    userid=current_user.id,
+                    sighting_time=datetime.now(),
+                    listid=listid
+                )
+                db.session.add(new_sighting)
+                db.session.commit()
+                return jsonify({'status': 'success', 'message': 'Bird added to list', 'sightingid': new_sighting.sightingid})
+
+    lists = UserList.query.filter_by(userid=current_user.id).all()
+    return jsonify({'lists': [list.to_dict() for list in lists]})
+
+from flask import jsonify
+
+@app.route('/api/list/<int:listid>', methods=['GET', 'POST'])
+@login_required
+def view_list(listid):
+    list = UserList.query.get_or_404(listid)
+
+    if list.userid != current_user.id:
+        return jsonify({'status': 'error', 'message': 'Unauthorized access'})
+
+    if request.method == 'POST':
+        bird_name = request.form.get('bird')
+        if bird_name:
+            new_bird = Log.query.filter_by(bird=bird_name).first()
+            if new_bird:
+                existing_sighting = UserSighting.query.filter_by(
+                    birdref=new_bird.birdid, listid=listid
+                ).order_by(UserSighting.sighting_time.desc()).first()
+                
+                if existing_sighting:
+                    existing_sighting.sighting_time = datetime.now()
+                    message = f"{bird_name} sighting updated."
+                else:
+                    new_sighting = UserSighting(
+                        birdref=new_bird.birdid, 
+                        userid=current_user.id, 
+                        sighting_time=datetime.now(), 
+                        listid=listid
+                    )
+                    db.session.add(new_sighting)
+                    message = f"New sighting of {bird_name} added!"
+                db.session.commit()
+                return jsonify({'status': 'success', 'message': message})
+
+    distinct_sightings = db.session.query(
+        UserSighting.birdref,
+        Log.bird,
+        db.func.max(UserSighting.sighting_time).label('latest_sighting_time')
+    ).join(
+        Log, UserSighting.birdref == Log.birdid
+    ).filter(
+        UserSighting.listid == listid,
+        UserSighting.userid == current_user.id
+    ).group_by(
+        UserSighting.birdref,
+        Log.bird
+    ).all()
+
+    sightings_with_names = []
+    for birdref, bird_name, latest_sighting_time in distinct_sightings:
+        sighting_id = UserSighting.query.filter(
+            UserSighting.birdref == birdref,
+            UserSighting.sighting_time == latest_sighting_time
+        ).first().sightingid
+
+        sightings_with_names.append({
+            'sighting_id': sighting_id, 
+            'birdref': birdref, 
+            'bird_name': bird_name, 
+            'latest_sighting_time': latest_sighting_time
+        })
+
+    bird_count = UserSighting.query.filter_by(listid=listid).distinct(UserSighting.birdref).count()
+
+    return jsonify({
+        'list': list.to_dict(), 
+        'sightings': sightings_with_names, 
+        'bird_count': bird_count
+    })
+
+
+from flask import jsonify
+
+@app.route('/api/delete_sighting/<int:sightingid>', methods=['POST'])
+@login_required
+def delete_sighting(sightingid):
+    sighting = UserSighting.query.get_or_404(sightingid)
+    if sighting.userid != current_user.id:
+        # Prevent users from deleting sightings that do not belong to them
+        return jsonify({'status': 'error', 'message': 'Unauthorized access'})
+    
+    db.session.delete(sighting)
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'message': 'Sighting deleted successfully'})
+
+from flask import jsonify
+
+@app.route('/api/delete_list/<int:listid>', methods=['POST'])
+@login_required
+def delete_list(listid):
+    list_to_delete = UserList.query.get_or_404(listid)
+    if list_to_delete.userid != current_user.id:
+        # Prevent users from deleting lists that do not belong to them
+        return jsonify({'status': 'error', 'message': 'Unauthorized access'})
+
+    # Delete all associated sightings if not using cascading deletes
+    UserSighting.query.filter_by(listid=listid).delete()
+
+    # Now delete the list itself
+    db.session.delete(list_to_delete)
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'message': 'List and associated sightings deleted successfully'})
+
 
 
 if __name__ == '__main__':

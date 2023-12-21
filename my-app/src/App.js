@@ -93,7 +93,7 @@ function App() {
                 {/* Your bird suggestions components here */}
                 <BirdSuggestions query={birdName} colors={colors} regions={regions} />
               </div>
-              <div className='dropdown'><DropdownMenu /></div>
+              {/*<div className='dropdown'><DropdownMenu /></div>*/}
             </div>
             <div className="bottom-card">
               <div className="bird-list">
