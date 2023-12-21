@@ -2,9 +2,9 @@ function BirdList({ birds }) {
   return (
     <ol>
       {birds.map(bird => (
-        <li 
+        <li
           key={bird.birdid}
-          style={{ 
+          style={{
             fontWeight: bird.seen === 'Sighted' ? 'bold' : 'normal',
             fontStyle: bird.seen === 'Sighted' ? 'normal' : 'italic',
             color: bird.seen === 'Sighted' ? '#000557' : 'gray'
@@ -15,6 +15,5 @@ function BirdList({ birds }) {
     </ol>
   );
 }
-  
-  export default BirdList;
-  
+
+export default BirdList;

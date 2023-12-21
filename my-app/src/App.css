@@ -12,7 +12,7 @@
   min-height: 60vh;
   margin: 0 auto;
   background-color: #3D437E;
-  
+
 }
 
 .main-content {
@@ -42,7 +42,7 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   position: relative;
-  
+
 }
 
 .enter-bird {
@@ -101,38 +101,40 @@
   position: absolute;
   width: 100%;
   top: 0;
-  z-index: 1; 
+  z-index: 1;
   color: white;
   background-color: #E8A3BE;
   margin-top: 87px;
   left: 0;
   padding-bottom: 0;
-  
+
 }
 
 .slist ul {
-  list-style-type: none; /* Removes bullets */
-  padding-left: 5px; /* Removes default padding */
-  
+  list-style-type: none;
+  /* Removes bullets */
+  padding-left: 5px;
+  /* Removes default padding */
+
 }
 
 .slist ul li {
   padding: 3px 0;
   color: #000557;
-  font-size: 9pt; /* Slightly smaller font size */
+  font-size: 9pt;
+  /* Slightly smaller font size */
   font-weight: bold;
   padding-left: 15px;
 }
 
-
-
- .ul li::marker {
-    display: none; /* Hides the marker */
+.ul li::marker {
+  display: none;
+  /* Hides the marker */
 }
 
 
 .bottom-card {
-  position: relative; 
+  position: relative;
   max-height: 300px;
   overflow-y: auto;
 }
@@ -171,15 +173,15 @@
 
 .logo {
   text-align: left;
-  
+
 }
 
 .logo h3 {
-  margin: 0; 
+  margin: 0;
   margin-top: 3px;
-  padding: 0; 
+  padding: 0;
   color: white;
-  text-align: left; 
+  text-align: left;
   margin-left: 20px;
 
 }
@@ -198,30 +200,42 @@
   font-size: 9pt;
 }
 
-
-
 /* For Chrome, Safari and Opera */
 ::-webkit-scrollbar {
-  width: 12px; /* Width of the scrollbar */
+  width: 12px;
+  /* Width of the scrollbar */
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* Make the track (background) transparent */
+  background: transparent;
+  /* Make the track (background) transparent */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Color of the slider */
-  border-radius: 6px; /* Roundness of the slider */
+  background: #888;
+  /* Color of the slider */
+  border-radius: 6px;
+  /* Roundness of the slider */
 }
 
 /* When hovering over the scrollbar */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color of the slider when hovered */
+  background: #555;
+  /* Color of the slider when hovered */
 }
 
 /* For Firefox */
 * {
-  scrollbar-width: thin; /* Width of the scrollbar */
-  scrollbar-color: #888 transparent; /* Color of the slider and track */
+  scrollbar-width: thin;
+  /* Width of the scrollbar */
+  scrollbar-color: #888 transparent;
+  /* Color of the slider and track */
 }
 
+.dropdown  {
+  min-height: 100px;
+  color: red;
+  position: relative;
+  z-index: 5;
+  margin-top: 30px;
+}

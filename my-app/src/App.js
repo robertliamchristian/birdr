@@ -4,6 +4,7 @@ import BirdList from './BirdList';
 import AddBird from './AddBird';
 import './App.css';
 import BirdSuggestions from './BirdSuggestions';
+import DropdownMenu from './DropdownMenu';
 
 function App() {
   const [birds, setBirds] = useState([]);
@@ -70,10 +71,12 @@ function App() {
   const handleRegionSelect = (selectedRegions) => { // Add handler for region selection 
     setRegions(selectedRegions);
   };
-  
+
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
+
+
 
   return (
     <div className="App">
@@ -88,11 +91,12 @@ function App() {
                 {/* Your bird entry form components here */}
                 <AddBird onAddBird={handleAddBird} onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
               </div>
+              <div className='dropdown'><DropdownMenu /></div>
               <div className="bs">
                 {/* Your bird suggestions components here */}
                 <BirdSuggestions query={birdName} colors={colors} regions={regions} />
               </div>
-              
+
             </div>
             <div className="bottom-card">
               <div className="bird-list">
@@ -102,18 +106,18 @@ function App() {
             </div>
           </div>
           <div className='bottom-container'>
-          <div className="logo">
-            <h3>Birdedex</h3>
-          </div>
-          <div className='loggedin'>
-            <p>Logged in as: {user}</p>
-          </div>
+            <div className="logo">
+              <h3>Birdedex</h3>
+            </div>
+            <div className='loggedin'>
+              <p>Logged in as: {user}</p>
+            </div>
           </div>
         </div>
       </main>
     </div>
   );
-  
+
 }
 
 export default App;
