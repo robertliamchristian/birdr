@@ -5,6 +5,7 @@ import AddBird from './AddBird';
 import './App.css';
 import BirdSuggestions from './BirdSuggestions';
 import DropdownMenu from './DropdownMenu';
+import UserListForm from './UserListForm';
 
 function App() {
   const [birds, setBirds] = useState([]);
@@ -71,7 +72,17 @@ function App() {
   const handleRegionSelect = (selectedRegions) => { // Add handler for region selection 
     setRegions(selectedRegions);
   };
-  
+
+  const [isUserListFormOpen, setIsUserListFormOpen] = useState(false);
+
+  const handleOpenUserListForm = () => {
+    setIsUserListFormOpen(true);
+  };
+
+  const handleCloseUserListForm = () => {
+    setIsUserListFormOpen(false);
+  };
+
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
@@ -80,9 +91,13 @@ function App() {
     <div className="App">
       <header>
         {/* ...header content... */}
+        <button onClick={handleOpenUserListForm}>Make a new list</button>
       </header>
       <main>
         <div className="main-content">
+        {isUserListFormOpen && (
+            <UserListForm onClose={handleCloseUserListForm} />
+          )}
           <div className="card">
             <div className="top-card">
               <div className="enter-bird">

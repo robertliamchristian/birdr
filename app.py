@@ -92,6 +92,14 @@ class UserList(db.Model):
     title = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
 
+    def to_dict(self):
+        return {
+            'listid': self.listid,
+            'userid': self.userid,
+            'title': self.title,
+            'created_at': self.created_at
+        }
+
 @app.route('/api/birds', methods=['GET'])
 @login_required
 def get_birds():
@@ -226,9 +234,10 @@ def get_regions():
 @login_required
 def userlist():
     if request.method == 'POST':
-        list_name = request.form.get('list_name')
+        data = request.json
+        list_name = data.get('list_name')
         if list_name:
-            new_list = UserList(userid=current_user.id, title=list_name)
+            new_list = UserList(userid=current_user.id, title=list_name, created_at=data.get('created_at'))
             db.session.add(new_list)
             db.session.commit()
             return jsonify({'status': 'success', 'message': 'List created', 'listid': new_list.listid})
