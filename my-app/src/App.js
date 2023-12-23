@@ -18,13 +18,20 @@ function App() {
   const [regions, setRegions] = useState([]);
   const [birdName, setBirdName] = useState('');
 
-  const fetchBirds = () => {
-    fetch('http://localhost:5002/api/birds', { credentials: 'include' })
-      .then(response => response.json())
-      .then(data => {
+  const fetchBirds = async () => {
+    try {
+      const response = await fetch('http://localhost:5002/api/birds', { credentials: 'include' });
+      if(response.ok) {
+        const data = await response.json();
         console.log(data);
         setBirds(data);
-      });
+      } else {
+        console.error('Error fetching birds');
+      }
+    } catch (error) {
+      console.error('Error fetching birds:', error);
+    }
+    
   };
 
   useEffect(() => {
@@ -95,12 +102,9 @@ function App() {
     <div className="App">
       <header>
         {/* ...header content... */}
-        <button onClick={handleOpenUserListForm}>Make a new list</button>
       </header>
       <main>
         <div className="main-content">
-       <ViewLists />
-       <ShowList />
         {isUserListFormOpen && (
             <UserListForm onClose={handleCloseUserListForm} />
           )}
@@ -114,7 +118,7 @@ function App() {
                 {/* Your bird suggestions components here */}
                 <BirdSuggestions query={birdName} colors={colors} regions={regions} />
               </div>
-              {/*<div className='dropdown'><DropdownMenu /></div>*/}
+              <div className='dropdown'><DropdownMenu /></div>
             </div>
             <div className="bottom-card">
               <div className="bird-list">

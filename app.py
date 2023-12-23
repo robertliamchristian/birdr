@@ -161,6 +161,7 @@ def login():
 def add_sighting():
     data = request.get_json()
     bird_name = data.get('birdname')
+    list_id = data.get('listid')  # Extract listid from the request
     user_id = current_user.get_id()
 
     # Look up the bird's ID in the log table
@@ -173,13 +174,14 @@ def add_sighting():
     sighting = UserSighting(
         birdref=bird.birdid,
         userid=user_id,
-        sighting_time=datetime.datetime.now(),  # Use the current time
-        listid=None  # Or use the list ID from the request
+        sighting_time=datetime.datetime.now(),
+        listid=list_id  # Assign the list ID from the request
     )
     db.session.add(sighting)
     db.session.commit()
 
     return jsonify(sighting.to_dict()), 201
+
 
 # start suggestion logic
 from sqlalchemy import func, distinct, case

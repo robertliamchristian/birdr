@@ -1,11 +1,11 @@
+// ShowList.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import AddBirdToList from './AddBirdToList';
 
 const ShowList = ({ listid }) => {
-    console.log('Rendering ShowList with listid:', listid); // Add this line
-
     const [birds, setBirds] = useState([]);
     const [error, setError] = useState(null);
+    const [refresh, setRefresh] = useState(false);  // Add this line
 
     const fetchBirds = async () => {
         try {
@@ -30,7 +30,11 @@ const ShowList = ({ listid }) => {
 
     useEffect(() => {
         fetchBirds();
-    }, [listid]);
+    }, [listid, refresh]);  // Add refresh to the dependency array
+
+    const handleAddBird = () => {
+        setRefresh(!refresh);  // Toggle refresh state when a new bird is added
+    };
 
     if (error) {
         return <div>Error: {error}</div>;
@@ -38,7 +42,9 @@ const ShowList = ({ listid }) => {
 
     return (
         <div>
-            <h2>Birds in List {listid}</h2>
+            <h2>Birds</h2>
+            <AddBirdToList listid={listid} onAddBird={handleAddBird} />
+
             {birds.map((bird, index) => (
                 <div key={index}>
                     <p>{bird}</p>
