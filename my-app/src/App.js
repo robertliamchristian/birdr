@@ -6,6 +6,10 @@ import './App.css';
 import BirdSuggestions from './BirdSuggestions';
 import DropdownMenu from './DropdownMenu';
 import UserListForm from './UserListForm';
+import ViewLists from './ViewLists';
+import ShowList from './ShowList';
+
+
 
 function App() {
   const [birds, setBirds] = useState([]);
@@ -95,6 +99,8 @@ function App() {
       </header>
       <main>
         <div className="main-content">
+       <ViewLists />
+       <ShowList />
         {isUserListFormOpen && (
             <UserListForm onClose={handleCloseUserListForm} />
           )}

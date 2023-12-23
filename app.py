@@ -10,10 +10,18 @@ from sqlalchemy.orm.exc import NoResultFound
 import datetime
 import logging
 from flask_cors import CORS
-from sqlalchemy import distinct, case, func
+from sqlalchemy import distinct, case, func, and_
+from flask import send_from_directory
+from datetime import timedelta
+
+
+
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True  # Should be used in combination with 'None' to ensure cookies are sent over HTTPS
+app.permanent_session_lifetime = timedelta(days=1)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -23,7 +31,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-app.secret_key = 'your_really_secret_key_here'
+app.secret_key = 'your secret key'
 
 # Configure your database connection here
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://wpuhuargucydbt:e8f85ea517fa5809ce3693691455d866fb90936294eea12d9479c6a262419477@ec2-3-234-126-10.compute-1.amazonaws.com:5432/d73l1lvoh2a6o'
@@ -260,78 +268,22 @@ def userlist():
     lists = UserList.query.filter_by(userid=current_user.id).all()
     return jsonify({'lists': [list.to_dict() for list in lists]})
 
-from flask import jsonify
-
-@app.route('/api/list/<int:listid>', methods=['GET', 'POST'])
+@app.route('/api/user_sighting', methods=['GET'])
 @login_required
-def view_list(listid):
-    list = UserList.query.get_or_404(listid)
-
-    if list.userid != current_user.id:
-        return jsonify({'status': 'error', 'message': 'Unauthorized access'})
-
-    if request.method == 'POST':
-        bird_name = request.form.get('bird')
-        if bird_name:
-            new_bird = Log.query.filter_by(bird=bird_name).first()
-            if new_bird:
-                existing_sighting = UserSighting.query.filter_by(
-                    birdref=new_bird.birdid, listid=listid
-                ).order_by(UserSighting.sighting_time.desc()).first()
-                
-                if existing_sighting:
-                    existing_sighting.sighting_time = datetime.now()
-                    message = f"{bird_name} sighting updated."
-                else:
-                    new_sighting = UserSighting(
-                        birdref=new_bird.birdid, 
-                        userid=current_user.id, 
-                        sighting_time=datetime.now(), 
-                        listid=listid
-                    )
-                    db.session.add(new_sighting)
-                    message = f"New sighting of {bird_name} added!"
-                db.session.commit()
-                return jsonify({'status': 'success', 'message': message})
-
-    distinct_sightings = db.session.query(
-        UserSighting.birdref,
-        Log.bird,
-        db.func.max(UserSighting.sighting_time).label('latest_sighting_time')
-    ).join(
-        Log, UserSighting.birdref == Log.birdid
-    ).filter(
-        UserSighting.listid == listid,
-        UserSighting.userid == current_user.id
-    ).group_by(
-        UserSighting.birdref,
-        Log.bird
-    ).all()
-
-    sightings_with_names = []
-    for birdref, bird_name, latest_sighting_time in distinct_sightings:
-        sighting_id = UserSighting.query.filter(
-            UserSighting.birdref == birdref,
-            UserSighting.sighting_time == latest_sighting_time
-        ).first().sightingid
-
-        sightings_with_names.append({
-            'sighting_id': sighting_id, 
-            'birdref': birdref, 
-            'bird_name': bird_name, 
-            'latest_sighting_time': latest_sighting_time
-        })
-
-    bird_count = UserSighting.query.filter_by(listid=listid).distinct(UserSighting.birdref).count()
-
-    return jsonify({
-        'list': list.to_dict(), 
-        'sightings': sightings_with_names, 
-        'bird_count': bird_count
-    })
+def user_sighting():
+    listid = request.args.get('listid')
+    if listid:
+        # Join UserSighting, Log, and UserList tables and filter by listid and userid
+        sightings = db.session.query(Log.bird).\
+            join(UserSighting, UserSighting.birdref == Log.birdid).\
+            join(UserList, UserList.listid == UserSighting.listid).\
+            filter(and_(UserList.listid == listid, UserSighting.userid == current_user.id)).all()
+        birds = [sighting[0] for sighting in sightings]  # Get the bird names from the query results
+        return jsonify({'birds': birds})
+    else:
+        return jsonify({'error': 'No listid provided'}), 400
 
 
-from flask import jsonify
 
 @app.route('/api/delete_sighting/<int:sightingid>', methods=['POST'])
 @login_required
@@ -365,6 +317,11 @@ def delete_list(listid):
 
     return jsonify({'status': 'success', 'message': 'List and associated sightings deleted successfully'})
 
+from flask import send_from_directory
+
+@app.route('/')
+def home():
+    return send_from_directory('static', 'index.html')
 
 
 if __name__ == '__main__':
