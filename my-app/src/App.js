@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import BirdList from './BirdList';
 import AddBird from './AddBird';
-import './App.css';
+/*import './App.css'*/
 import BirdSuggestions from './BirdSuggestions';
 import DropdownMenu from './DropdownMenu';
 import UserListForm from './UserListForm';
 import ViewLists from './ViewLists';
 import ShowList from './ShowList';
-
-
 
 function App() {
   const [birds, setBirds] = useState([]);
@@ -17,6 +15,7 @@ function App() {
   const [colors, setColors] = useState([]);
   const [regions, setRegions] = useState([]);
   const [birdName, setBirdName] = useState('');
+  const [currentView, setCurrentView] = useState('birdedex');
 
   const fetchBirds = async () => {
     try {
@@ -31,115 +30,39 @@ function App() {
     } catch (error) {
       console.error('Error fetching birds:', error);
     }
-    
   };
+
+  
 
   useEffect(() => {
-    if (user) {
-      fetchBirds();
-    }
-  }, [user]);
+    fetchBirds();
+  }, []);
 
-  const handleAddBird = async (birdName) => {
-    const response = await fetch('http://localhost:5002/api/sightings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ birdname: birdName }),
-      credentials: 'include',
-    });
-
-    if (response.ok) {
-      const newSighting = await response.json();
-      console.log('New sighting added:', newSighting);
-      fetchBirds();
-    } else {
-      console.error('Failed to add sighting');
-    }
+  const addBird = (birdName) => {
+    const newBird = {
+      birdid: birds.length + 1, // This is a placeholder, replace it with your own logic
+      bird: birdName,
+      seen: 'Not sighted' // This is a placeholder, replace it with your own logic
+    };
+    setBirds(prevBirds => [...prevBirds, newBird]);
   };
-
-  const handleLogin = async (username, password) => {
-    try {
-      const response = await fetch('http://localhost:5002/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-        credentials: 'include',
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setUser(data.username);
-      } else {
-        console.error(data.message);
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
-  };
-
-  const handleColorSelect = (selectedColors) => {
-    setColors(selectedColors);
-  };
-
-  const handleRegionSelect = (selectedRegions) => { // Add handler for region selection 
-    setRegions(selectedRegions);
-  };
-
-  const [isUserListFormOpen, setIsUserListFormOpen] = useState(false);
-
-  const handleOpenUserListForm = () => {
-    setIsUserListFormOpen(true);
-  };
-
-  const handleCloseUserListForm = () => {
-    setIsUserListFormOpen(false);
-  };
-
-  if (!user) {
-    return <Login onLogin={handleLogin} />;
-  }
 
   return (
     <div className="App">
-      <header>
-        {/* ...header content... */}
-      </header>
-      <main>
-        <div className="main-content">
-        {isUserListFormOpen && (
-            <UserListForm onClose={handleCloseUserListForm} />
-          )}
-          <div className="card">
-            <div className="top-card">
-              <div className="enter-bird">
-                {/* Your bird entry form components here */}
-                <AddBird onAddBird={handleAddBird} onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
-              </div>
-              <div className="bs">
-                {/* Your bird suggestions components here */}
-                <BirdSuggestions query={birdName} colors={colors} regions={regions} />
-              </div>
-              <div className='dropdown'><DropdownMenu /></div>
-            </div>
-            <div className="bottom-card">
-              <div className="bird-list">
-                {/* Your bird list component here */}
-                <BirdList birds={birds} />
-              </div>
-            </div>
-          </div>
-          <div className='bottom-container'>
-          <div className="logo">
-            <h3>Birdedex</h3>
-          </div>
-          <div className='loggedin'>
-            <p>Logged in as: {user}</p>
-          </div>
-          </div>
-        </div>
-      </main>
+      <select onChange={(e) => setCurrentView(e.target.value)}>
+        <option value="birdedex">Birdedex</option>
+        <option value="userlists">User Lists</option>
+      </select>
+
+      <AddBird onAddBird={addBird} />
+
+      {currentView === 'birdedex' ? (
+        <BirdList birds={birds} />
+      ) : (
+        <ViewLists userid={user?.id} />
+      )}
     </div>
   );
-  
 }
 
 export default App;

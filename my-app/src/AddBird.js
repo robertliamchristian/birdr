@@ -12,9 +12,8 @@ function AddBird({ onAddBird }) {
   
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAddBird(inputValue); // Use inputValue when adding bird
-    setInputValue(''); // Clear the input
-    setBirdName(''); // Also clear the bird name for suggestions
+    onAddBird(inputValue);
+    setInputValue('');
   };
 
   const handleInputChange = (event) => {
