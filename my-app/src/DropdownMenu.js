@@ -32,11 +32,14 @@ function DropdownMenu() {
         More Options
       </button>
       {isOpen && (
-        <div>
-          <IdentifyBird onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} />
-          <ViewLists onSelect={handleListSelect} />
-          {selectedListId && <AddBirdToList listid={selectedListId} />}
-          {selectedListId && <ShowList listid={selectedListId} />}
+        <div className='dropdownmain'>
+
+          <div className='IDbirdtext'><IdentifyBird onColorSelect={handleColorSelect} onRegionSelect={handleRegionSelect} /></div>
+          
+          <div className='viewlists'><ViewLists onSelect={handleListSelect} /></div>
+          
+          <div className='selects'>{selectedListId && <AddBirdToList listid={selectedListId} />}
+          {selectedListId && <ShowList listid={selectedListId} />}</div>
           
         </div>
       )}

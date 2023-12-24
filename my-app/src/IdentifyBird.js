@@ -31,7 +31,7 @@ function IdentifyBird({ onColorSelect, onRegionSelect }) {
 
   return (
     <div>
-      <h3>Identify a bird</h3>
+      
       <label>Color:</label>
       <Select
         isMulti

@@ -42,7 +42,6 @@ const ShowList = ({ listid }) => {
 
     return (
         <div>
-            <h2>Birds</h2>
             <AddBirdToList listid={listid} onAddBird={handleAddBird} />
 
             {birds.map((bird, index) => (
